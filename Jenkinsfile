@@ -39,6 +39,7 @@ node {
                 // Would be great if withCredentials could be used to mask the value, mark it as secret, or similar
                 println("Repository URL is https://x-access-token:****@github.com/${repo}/${application}.git")
                 sh(script: "set +x; git clone https://x-access-token:${githubAppToken}@github.com/${repo}/${application}.git .")
+                sh "git checkout PAM-2869"
             }
         }
 
