@@ -1,5 +1,6 @@
 package no.nav.arbeid.kandidatsok.es.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
@@ -85,9 +86,11 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
 
             CreateIndexResponse createIndexResponse = client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
             LOGGER.info("CREATEINDEXRESPONSE: index={}, acknowledged={}", createIndexResponse.index(), createIndexResponse.isAcknowledged());
+        } catch (IllegalArgumentException ie) {
+            throw new ApplicationException("Feil ved oppretting av ny indeks", ie);
         } catch (IOException ioe) {
             LOGGER.error("Feilet å lage index", ioe);
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
     }
 
@@ -99,7 +102,7 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
             LOGGER.info("DELETERESPONSE: index={}, acknowledged={}", indexName, deleteIndexResponse.isAcknowledged());
         } catch (IOException ioe) {
             LOGGER.error("Feilet å slette index", ioe);
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
     }
 
@@ -114,8 +117,10 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
             request.source(jsonString, XContentType.JSON);
             IndexResponse indexResponse = esExec(() -> client.index(request, RequestOptions.DEFAULT), indexName);
             LOGGER.debug("INDEXRESPONSE: " + indexResponse.toString());
+        } catch (JsonProcessingException jpe) {
+            throw new ApplicationException("Feil ved serialisering til JSON", jpe);
         } catch (IOException ioe) {
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
     }
 
@@ -123,6 +128,7 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
     public int bulkIndex(List<EsCv> esCver, String indexName) {
         BulkRequest bulkRequest = Requests.bulkRequest();
         String currentKandidatnr = "";
+
         try {
             for (EsCv esCv : esCver) {
                 currentKandidatnr = esCv.getKandidatnr();
@@ -132,14 +138,8 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
 
                 bulkRequest.add(ir);
             }
-        } catch (Exception e) {
-            LOGGER.error(
-                    "Greide ikke å serialisere CV til JSON for å bygge opp bulk-indekseringsrequest: {}. Kandidatnr: {}",
-                    e.getMessage(), currentKandidatnr, e);
-            throw new ApplicationException(
-                    "Greide ikke å serialisere CV til JSON for å bygge opp bulk-indekseringsrequest. Kandidatnr: "
-                            + currentKandidatnr,
-                    e);
+        } catch (JsonProcessingException e) {
+            throw new ApplicationException("Feil ved serialisering til JSON", e);
         }
 
         LOGGER.debug("Sender bulk indexrequest med {} cv'er", esCver.size());
@@ -229,15 +229,9 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
     public boolean doesIndexExist(String indexName) {
         try {
             return client.indices().exists(new GetIndexRequest(indexName), RequestOptions.DEFAULT);
-//            Response restResponse =
-//                    client.getLowLevelClient().performRequest(new Request("HEAD", "/" + indexName));
-//            return restResponse.getStatusLine().getStatusCode() == 200;
-        } catch (ResponseException e) {
-            LOGGER.warn("Exception while calling isExistingIndex", e);
         } catch (IOException ioe) {
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
-        return false;
     }
 
     /**
@@ -264,7 +258,7 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
                 throw ese;
             }
         } catch (IOException ioe) {
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
     }
 
@@ -293,7 +287,7 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
         } catch (Exception e) {
             LOGGER.warn("Greide ikke å hente ut antall dokumenter for indeks {}, spørring '{}': {}",
                     indexName, query != null ? query : "<no query>", e.getMessage(), e);
-            return 0L;
+            throw new OperationalException(e);
         }
     }
 
@@ -313,7 +307,7 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
             GetAliasesResponse aliases = client.indices().getAlias(new GetAliasesRequest(alias).indices(indexPattern), RequestOptions.DEFAULT);
             return aliases.getAliases().keySet();
         } catch (IOException io) {
-            throw new ElasticException(io);
+            throw new OperationalException(io);
         }
     }
 
@@ -328,7 +322,7 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
             LOGGER.info("Satt alias {} til å peke mot {}: {}", alias, addForIndexName, response.isAcknowledged() ? "ACK" : "ERR");
             return response.isAcknowledged();
         } catch (IOException e) {
-            throw new ElasticException(e);
+            throw new OperationalException(e);
         }
 
     }

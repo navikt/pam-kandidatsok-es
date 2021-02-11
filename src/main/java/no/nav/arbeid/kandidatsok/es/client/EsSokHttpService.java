@@ -2,6 +2,7 @@ package no.nav.arbeid.kandidatsok.es.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.arbeid.cv.kandidatsok.es.domene.sok.*;
+import no.nav.arbeid.cv.kandidatsok.es.exception.OperationalException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.search.TotalHits;
 import org.apache.lucene.search.join.ScoreMode;
@@ -40,6 +41,9 @@ import java.util.stream.StreamSupport;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
+/**
+ * Tjeneste-grensesnitt for søk i ElasticSearch CV-indeks.
+ */
 public class EsSokHttpService implements EsSokService, AutoCloseable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EsSokHttpService.class);
@@ -100,7 +104,7 @@ public class EsSokHttpService implements EsSokService, AutoCloseable {
             return compSuggestion.getOptions().stream()
                     .map(option -> option.getHit().getSourceAsString()).collect(toList());
         } catch (IOException ioe) {
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
     }
 
@@ -130,7 +134,7 @@ public class EsSokHttpService implements EsSokService, AutoCloseable {
             return compSuggestion.getOptions().stream().map(option -> option.getText().string())
                     .collect(toList());
         } catch (IOException ioe) {
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
     }
 
@@ -154,7 +158,7 @@ public class EsSokHttpService implements EsSokService, AutoCloseable {
 
             return aggregateList;
         } catch (IOException ioe) {
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
 
     }
@@ -220,7 +224,7 @@ public class EsSokHttpService implements EsSokService, AutoCloseable {
             return toSokeresultat(esExec(() -> search(UseCase.AG_SOK, queryBuilder, sk.fraIndex(),
                     sk.antallResultater(), sortQueryBuilder)));
         } catch (IOException ioe) {
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
     }
 
@@ -253,7 +257,7 @@ public class EsSokHttpService implements EsSokService, AutoCloseable {
             }
             return Optional.of(cver.iterator().next());
         } catch (IOException ioe) {
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
     }
 
@@ -374,7 +378,7 @@ public class EsSokHttpService implements EsSokService, AutoCloseable {
             return toSokeresultat(esExec(() -> search(UseCase.VEIL_SOK, queryBuilder, sk.fraIndex(),
                     sk.antallResultater(), sortQueryBuilder)));
         } catch (IOException ioe) {
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
     }
 
@@ -1050,7 +1054,7 @@ public class EsSokHttpService implements EsSokService, AutoCloseable {
 
             return Optional.ofNullable(esCv);
         } catch (IOException ioe) {
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
     }
 
@@ -1070,7 +1074,7 @@ public class EsSokHttpService implements EsSokService, AutoCloseable {
             return new Sokeresultat(usortertSokeresultat.getTotaltAntallTreff(), sorterteCver,
                     usortertSokeresultat.getAggregeringer());
         } catch (IOException ioe) {
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
     }
 
@@ -1085,7 +1089,7 @@ public class EsSokHttpService implements EsSokService, AutoCloseable {
             return new Sokeresultat(usortertSokeresultat.getTotaltAntallTreff(), sorterteCver,
                     usortertSokeresultat.getAggregeringer());
         } catch (IOException ioe) {
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
     }
 
@@ -1100,7 +1104,7 @@ public class EsSokHttpService implements EsSokService, AutoCloseable {
             return new Sokeresultat(usortertSokeresultat.getTotaltAntallTreff(), sorterteCver,
                     usortertSokeresultat.getAggregeringer());
         } catch (IOException ioe) {
-            throw new ElasticException(ioe);
+            throw new OperationalException(ioe);
         }
     }
 
