@@ -545,13 +545,14 @@ public class IndexCvIT {
         List<String> sletteIder = asList(EsCvObjectMother.giveMeEsCv().getKandidatnr(),
                 EsCvObjectMother.giveMeEsCv2().getKandidatnr());
 
-        int antallForBulkSletting =
-                sokClient.arbeidsgiverSok(Sokekriterier.med().bygg()).getCver().size();
-        indexerClient.bulkSlettKandidatnr(sletteIder, DEFAULT_INDEX_NAME);
-        int antallEtterSletting =
-                sokClient.arbeidsgiverSok(Sokekriterier.med().bygg()).getCver().size();
+        int antallFørBulkSletting = sokClient.arbeidsgiverSok(Sokekriterier.med().bygg()).getCver().size();
 
-        Assertions.assertThat(antallForBulkSletting - antallEtterSletting)
+        int antallSlettetFraEs = indexerClient.bulkSlettKandidatnr(sletteIder, DEFAULT_INDEX_NAME);
+        assertThat(antallSlettetFraEs).isEqualTo(2);
+
+        int antallEtterSletting = sokClient.arbeidsgiverSok(Sokekriterier.med().bygg()).getCver().size();
+
+        Assertions.assertThat(antallFørBulkSletting - antallEtterSletting)
                 .isEqualTo(sletteIder.size());
     }
 

@@ -24,8 +24,9 @@ public interface EsIndexerService {
 
     /**
      * @throws no.nav.arbeid.cv.kandidatsok.es.exception.OperationalException ved feil mot ES
+     * @return antall slettede kandidat-docs faktisk slettet fra ES
      */
-    void bulkSlettKandidatnr(List<String> kandidatnr, String indexName);
+    int bulkSlettKandidatnr(List<String> kandidatnr, String indexName);
 
     /**
      * Slett basert på aktør-id-er

@@ -9,6 +9,7 @@ import no.nav.arbeid.cv.kandidatsok.es.domene.EsCv;
 import no.nav.arbeid.cv.kandidatsok.es.exception.ApplicationException;
 import no.nav.arbeid.cv.kandidatsok.es.exception.OperationalException;
 import org.elasticsearch.ElasticsearchStatusException;
+import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest.AliasActions;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
@@ -205,7 +206,7 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
 
 
     @Override
-    public void bulkSlettKandidatnr(List<String> kandidatnr, String indexName) {
+    public int bulkSlettKandidatnr(List<String> kandidatnr, String indexName) {
         BulkRequest bulkRequest = Requests.bulkRequest();
 
         for (String id : kandidatnr) {
@@ -223,6 +224,9 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
                     .increment(antallFeil);
         }
         LOGGER.debug("BULKDELETERESPONSE: " + bulkResponse.toString());
+
+        return (int)Arrays.stream(bulkResponse.getItems()).filter(
+                r -> !r.isFailed() && r.getOpType() == DocWriteRequest.OpType.DELETE).count();
     }
 
     @Override
