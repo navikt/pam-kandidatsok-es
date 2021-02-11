@@ -77,4 +77,11 @@ public interface EsIndexerService {
      */
     boolean updateIndexAlias(String alias, String removeForIndexPattern, String addForIndexName);
 
+    /**
+     * Blokkerer kallende tråd til alle pågående skriveoperasjoner mot {@code indexName} er synlige i søk.
+     * @throws no.nav.arbeid.cv.kandidatsok.es.exception.OperationalException ved feil mot ES
+     */
+    void ventPaaOppdatertIndeks(String indexName);
+
+
 }
