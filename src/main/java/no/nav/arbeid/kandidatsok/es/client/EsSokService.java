@@ -56,6 +56,8 @@ public interface EsSokService {
     List<String> typeAheadNavkontor(String searchTerm);
 
     /**
+     * Henter kandidat, som enten må være synlig for arbeidsgivere, synlig for veiledere eller synlig for begge.
+     *
      * @throws no.nav.arbeid.cv.kandidatsok.es.exception.OperationalException ved feil mot ES
      */
     Optional<EsCv> arbeidsgiverHent(String kandidatnr);
@@ -66,11 +68,15 @@ public interface EsSokService {
     Optional<EsCv> veilederHent(String kandidatnr);
 
     /**
+     * Henter kun kandidater som er synlige for arbeidsgivere.
+     *
      * @throws no.nav.arbeid.cv.kandidatsok.es.exception.OperationalException ved feil mot ES
      */
     Sokeresultat arbeidsgiverHentKandidater(List<String> kandidatnummer);
 
     /**
+     * Henter kandidater som er synlige for arbeidsgivere, synlige for veileder eller synlige for begge.
+     *
      * @throws no.nav.arbeid.cv.kandidatsok.es.exception.OperationalException ved feil mot ES
      */
     Sokeresultat arbeidsgiverHentKandidaterForVisning(List<String> kandidatnummer);
