@@ -89,6 +89,8 @@ public class EsCv {
 
     private Boolean fritattAgKandidatsok;
 
+    private List<EsGodkjenning> godkjenninger = new ArrayList<>();
+
     private List<EsUtdanning> utdanning = new ArrayList<>();
 
     private List<EsFagdokumentasjon> fagdokumentasjon = new ArrayList<>();
@@ -257,6 +259,17 @@ public class EsCv {
                 liste.add(new EsSamletKompetanse(f.getTittel()));
             } else {
                 liste.add(new EsSamletKompetanse(EsFagdokumentasjon.getFagdokumentTypeLabel(f.getType())));
+            }
+        });
+        this.addSamletKompetanse(liste);
+    }
+
+    public void addGodkjenninger (Collection <EsGodkjenning> godkjenningListe) {
+        this.godkjenninger.addAll(godkjenningListe);
+        List<EsSamletKompetanse> liste = new ArrayList<>();
+        godkjenningListe.forEach(f -> {
+            if (f.getTittel() != null) {
+                liste.add(new EsSamletKompetanse(f.getTittel()));
             }
         });
         this.addSamletKompetanse(liste);
