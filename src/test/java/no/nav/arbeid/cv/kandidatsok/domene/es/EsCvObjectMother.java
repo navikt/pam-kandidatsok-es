@@ -416,6 +416,10 @@ public class EsCvObjectMother {
                 new ArrayList<>();
         EsArbeidstidsordningJobbonskerListe.add(EsArbeidstidsordningJobbonsker);
 
+        EsGodkjenning EsGodkjenning = new EsGodkjenning("Autorisasjon som helsefagarbeider", "id", "jobben", LocalDate.of(2020, 1, 8),12345678L);
+        ArrayList<EsGodkjenning> EsGodkjenningerListe = new ArrayList<>();
+        EsGodkjenningerListe.add(EsGodkjenning);
+
         EsCv esCv = new EsCv(nteAktorId(2), "05236984567", "KARI", "NORDMANN", fodselsdatoForAlder(39), false, "PARBS",
                 "unnasluntrer2@mailinator.com", "(+47) 22334455", "12345678", "NO", "2L",
                 "Dette er beskrivelsen av hva jeg har gjort i min yrkeskarriere",
@@ -432,6 +436,7 @@ public class EsCvObjectMother {
         esCv.addVerv(vervListe);
         esCv.addGeografiJobbonske(geografiJobbonskerListe);
         esCv.addYrkeJobbonske(yrkeJobbonskerListe);
+        esCv.addGodkjenninger(EsGodkjenningerListe);
         return esCv;
     }
 

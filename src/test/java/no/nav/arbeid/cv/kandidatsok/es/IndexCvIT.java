@@ -365,6 +365,19 @@ public class IndexCvIT {
     }
 
     @Test
+    public void testSamletKompetanseSkalGiResultatVedSokPaKompetanseGodkjenning() {
+        Sokeresultat sokeresultat = sokClient.arbeidsgiverSok(
+                Sokekriterier.med().kompetanser(Collections.singletonList("Autorisasjon som helsefagarbeider")).bygg());
+
+        List<EsCv> cver = sokeresultat.getCver();
+        EsCv cv = cver.get(0);
+
+        assertThat(cver.size()).isEqualTo(1);
+        assertThat(cv)
+                .isEqualTo(kandidatsokTransformer.transformer(EsCvObjectMother.giveMeEsCv2()));
+    }
+
+    @Test
     public void testSokPaFlereGeografiJobbonskerGirFlereResultat() {
         Sokeresultat sokeresultat = sokClient.arbeidsgiverSok(
                 Sokekriterier.med().geografiList(Collections.singletonList("NO12.1201")).bygg());
