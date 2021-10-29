@@ -202,10 +202,10 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
 
         DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest(indexName);
         deleteByQueryRequest.setQuery(deleteQueryBuilder);
-        deleteByQueryRequest.setScroll(TimeValue.timeValueSeconds(30));
-        deleteByQueryRequest.setRequestsPerSecond(1.0f);
+        // When many separate batches are deleted within a short time, scroll contexts build up in ES causing resource exhaustion issue.
+        // Keep timeout very short. Each batch can at most be around 1000 docs, so a long lasting scroll should not be necessary here.
+        deleteByQueryRequest.setScroll(TimeValue.timeValueSeconds(20));
         deleteByQueryRequest.setRefresh(refreshPolicy != WriteRequest.RefreshPolicy.NONE);
-
 
         BulkByScrollResponse bulkByScrollResponse = esExec(() -> client.deleteByQuery(deleteByQueryRequest, RequestOptions.DEFAULT), indexName);
         if (! bulkByScrollResponse.getBulkFailures().isEmpty()) {
