@@ -202,7 +202,7 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
 
         DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest(indexName);
         deleteByQueryRequest.setQuery(deleteQueryBuilder);
-        deleteByQueryRequest.setScroll(TimeValue.timeValueMinutes(1));
+        deleteByQueryRequest.setScroll(TimeValue.timeValueSeconds(30));
         deleteByQueryRequest.setRefresh(refreshPolicy != WriteRequest.RefreshPolicy.NONE);
 
 
