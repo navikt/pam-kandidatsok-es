@@ -32,6 +32,7 @@ import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.common.Strings;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -201,10 +202,18 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
 
         DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest(indexName);
         deleteByQueryRequest.setQuery(deleteQueryBuilder);
+        deleteByQueryRequest.setScroll(TimeValue.timeValueMinutes(1));
         deleteByQueryRequest.setRefresh(refreshPolicy != WriteRequest.RefreshPolicy.NONE);
 
-        // TODO inspect response for failures ! If at least one failure, then fail the entire request.
+
         BulkByScrollResponse bulkByScrollResponse = esExec(() -> client.deleteByQuery(deleteByQueryRequest, RequestOptions.DEFAULT), indexName);
+        if (! bulkByScrollResponse.getBulkFailures().isEmpty()) {
+            long antallFeil = bulkByScrollResponse.getBulkFailures().size();
+            meterRegistry.counter("cv.es.slett.feil", Tags.of("type", "infrastruktur"))
+                    .increment(antallFeil);
+            throw new OperationalException("Feil i forsøk på batch-sletting av CV-er basert på aktør-ider med deleteByQuery");
+        }
+
         return (int)bulkByScrollResponse.getDeleted();
     }
 
@@ -226,8 +235,9 @@ public class EsIndexerHttpService implements EsIndexerService, AutoCloseable {
                     Arrays.stream(bulkResponse.getItems()).filter(i -> i.isFailed()).count();
             meterRegistry.counter("cv.es.slett.feil", Tags.of("type", "infrastruktur"))
                     .increment(antallFeil);
+            throw new OperationalException("Feil i forsøk på batch-sletting av CV-er basert på kandidatnumre");
         }
-        LOGGER.debug("BULKDELETERESPONSE: " + bulkResponse.toString());
+        LOGGER.debug("BULKDELETERESPONSE: " + bulkResponse);
 
         return (int)Arrays.stream(bulkResponse.getItems()).filter(
                 r -> !r.isFailed() && r.getOpType() == DocWriteRequest.OpType.DELETE).count();

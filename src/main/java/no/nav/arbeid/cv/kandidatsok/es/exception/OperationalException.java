@@ -6,6 +6,10 @@ package no.nav.arbeid.cv.kandidatsok.es.exception;
  */
 public class OperationalException extends RuntimeException {
 
+    public OperationalException(String msg) {
+        super(msg);
+    }
+
     public OperationalException(Throwable cause) {
         super(cause);
     }
