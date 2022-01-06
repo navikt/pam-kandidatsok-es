@@ -25,7 +25,12 @@
             <artifactId>pam-ansettelseskodeverk</artifactId>
             <version>1.14</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/org.opensearch.client/opensearch-rest-client -->
+<!--        <dependency>-->
+<!--            <groupId>org.opensearch.client</groupId>-->
+<!--            <artifactId>opensearch-rest-high-level-client</artifactId>-->
+<!--            <version>1.2.3</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>elasticsearch-rest-high-level-client</artifactId>
@@ -155,7 +160,7 @@
             <url>https://github-package-registry-mirror.gc.nav.no/cached/maven-release</url>
         </repository>
     </repositories>
-    
+
     <distributionManagement>
         <repository>
             <id>github</id>
