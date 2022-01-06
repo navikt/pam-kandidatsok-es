@@ -6,8 +6,8 @@ import no.nav.arbeid.kandidatsok.es.client.EsIndexerHttpService;
 import no.nav.arbeid.kandidatsok.es.client.EsIndexerService;
 import no.nav.arbeid.kandidatsok.es.client.EsSokHttpService;
 import no.nav.arbeid.kandidatsok.es.client.EsSokService;
-import org.elasticsearch.action.support.WriteRequest;
-import org.elasticsearch.client.RestHighLevelClient;
+import org.opensearch.action.support.WriteRequest;
+import org.opensearch.client.RestHighLevelClient;
 
 public class EsServiceConfig {
 

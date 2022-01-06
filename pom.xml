@@ -23,18 +23,13 @@
         <dependency>
             <groupId>no.nav.arbeid.pam</groupId>
             <artifactId>pam-ansettelseskodeverk</artifactId>
-            <version>1.14</version>
+            <version>1.15</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.opensearch.client/opensearch-rest-client -->
-<!--        <dependency>-->
-<!--            <groupId>org.opensearch.client</groupId>-->
-<!--            <artifactId>opensearch-rest-high-level-client</artifactId>-->
-<!--            <version>1.2.3</version>-->
-<!--        </dependency>-->
         <dependency>
-            <groupId>org.elasticsearch.client</groupId>
-            <artifactId>elasticsearch-rest-high-level-client</artifactId>
-            <version>7.2.1</version>
+            <groupId>org.opensearch.client</groupId>
+            <artifactId>opensearch-rest-high-level-client</artifactId>
+            <version>1.2.3</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

@@ -1,13 +1,14 @@
-## PAM Kandidatsøk ES
+## PAM kandidatsøk ES-modul
 
-PAM Kandidatsøk ES er et bibliotek som håndterer indeksering og søk mot Elasticsearch for bruk i 
-kandidatsøk og cv-indekser. Innholder blant annet abstraksjoner for spørringer fra arbeidsgivers og veileders kandidatsøk, 
+pam-kandidatsok-es er et bibliotek som håndterer indeksering og søk mot
+Elasticsearch for bruk i kandidatsøk og cv-indekser. Innholder blant annet
+abstraksjoner for spørringer fra arbeidsgivers og veileders kandidatsøk,
 ElasticSearch CV mapping (schema) og oppsett av ElasticSearch klient.
 
 ### Krav for utviklere
 
-Du trenger Docker installert lokalt, i tillegg til et "vanlig" oppsett med Java og Maven. Se 
-[Auras side om Linux utviklerimage på 
+Du trenger Docker installert lokalt, i tillegg til et "vanlig" oppsett med Java
+og Maven. Se [Auras side om Linux utviklerimage på
 Confluence](https://confluence.adeo.no/display/AURA/Linux+utviklerimage)
 
 Du må installere [docker-compose](https://docs.docker.com/compose/install/#install-compose)
