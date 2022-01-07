@@ -1,0 +1,19 @@
+---
+# OpenSearch ES.
+# Default port for ES http service is 9272, but can be overridden by
+# setting ES_PORT env var.
+version: '3'
+services:
+  opensearch:
+    image: opensearchproject/opensearch:1.1.0
+    privileged: true
+    hostname: opensearch
+    container_name: opensearch
+    ports:
+      - "${ES_PORT:-9272}:9200"
+    environment:
+      - "discovery.type=single-node"         # disables bootstrap checks that are enabled when network.host is set to a non-loopback address
+      - "DISABLE_SECURITY_PLUGIN=true"       # disables security plugin entirely in OpenSearch by setting plugins.security.disabled: true in opensearch.yml
+
+    healthcheck:
+      test: "curl -sSf -o /dev/null http://opensearch:9200"
