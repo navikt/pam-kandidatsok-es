@@ -18,11 +18,11 @@ Docker-compose krever endring av Linuxkonfigurasjonen. Kjør følgende kommando 
 sysctl -w vm.max_map_count=262144
 ```
 
-For at innstillingen skal være permanent må du opprette filen 
+For at innstillingen skal være permanent må du opprette filen
 */etc/sysctl.d/01-increase_vm_max_map_count.conf*. Den skal inneholde linjen:
 
 ```
 vm.max_map_count=262144
 ```
 
-Nå kan du kjøre *mvn clean install*, som vil kjøre testene og bygge JAR.
+Nå kan du kjøre *mvn clean install*, som vil kjøre testene og bygge JAR..
